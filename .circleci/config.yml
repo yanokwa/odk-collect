@@ -11,6 +11,7 @@ references:
     working_directory: *workspace
     docker:
       - image: circleci/android:api-27
+    resource_class: xlarge
 
 jobs:
   check_quality:
@@ -24,7 +25,7 @@ jobs:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "collect_app/build.gradle" }}
       - run:
           name: Download dependencies
-          command: ./gradlew -PdisablePreDex --no-daemon --max-workers=2 androidDependencies
+          command: ./gradlew -PdisablePreDex --no-daemon --max-workers=8 androidDependencies
       - save_cache:
           paths:
             - ~/.gradle
@@ -32,7 +33,7 @@ jobs:
 
       - run:
           name: Run code quality checks
-          command: ./gradlew -PdisablePreDex --no-daemon --max-workers=2 checkCode
+          command: ./gradlew -PdisablePreDex --no-daemon --max-workers=8 checkCode
       - store_artifacts:
           path: collect_app/build/reports
           destination: reports
@@ -48,7 +49,7 @@ jobs:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "collect_app/build.gradle" }}
       - run:
           name: Download dependencies
-          command: ./gradlew -PdisablePreDex --no-daemon --max-workers=2 androidDependencies
+          command: ./gradlew -PdisablePreDex --no-daemon --max-workers=8 androidDependencies
       - save_cache:
           paths:
             - ~/.gradle
@@ -56,16 +57,16 @@ jobs:
 
       - run:
           name: Run nbi unit tests
-          command: ./gradlew -PdisablePreDex --no-daemon --max-workers=2 nbi-stubs:testDebug
+          command: ./gradlew -PdisablePreDex --no-daemon --max-workers=8 nbi-stubs:testDebug
       - run:
           name: Run async unit tests
-          command: ./gradlew -PdisablePreDex --no-daemon --max-workers=2 async:testDebug
+          command: ./gradlew -PdisablePreDex --no-daemon --max-workers=8 async:testDebug
       - run:
           name: Run material unit tests
-          command: ./gradlew -PdisablePreDex --no-daemon --max-workers=2 material:testDebug
+          command: ./gradlew -PdisablePreDex --no-daemon --max-workers=8 material:testDebug
       - run:
           name: Run app unit tests
-          command: ./gradlew -PdisablePreDex --no-daemon --max-workers=2 collect_app:testDebug
+          command: ./gradlew -PdisablePreDex --no-daemon --max-workers=8 collect_app:testDebug
       - store_artifacts:
           path: collect_app/build/reports
           destination: reports
@@ -83,7 +84,7 @@ jobs:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "collect_app/build.gradle" }}
       - run:
           name: Download dependencies
-          command: ./gradlew -PdisablePreDex --no-daemon --max-workers=2 androidDependencies
+          command: ./gradlew -PdisablePreDex --no-daemon --max-workers=8 androidDependencies
       - save_cache:
           paths:
             - ~/.gradle
@@ -91,7 +92,7 @@ jobs:
 
       - run:
           name: Assemble test build
-          command: ./gradlew -PdisablePreDex --no-daemon --max-workers=2 assembleDebug assembleDebugAndroidTest
+          command: ./gradlew -PdisablePreDex --no-daemon --max-workers=8 assembleDebug assembleDebugAndroidTest
       - run:
           name: Authorize gcloud
           command: |
